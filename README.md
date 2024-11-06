@@ -17,4 +17,6 @@ sudo dpkg -i nuguseyo-package.deb
 nuguseyo
 ```
 
+![App screenshot](./docs/static/screenshot.png)
+
 Have fun!
