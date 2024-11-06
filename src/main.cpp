@@ -1,5 +1,5 @@
-#include <iostream>
 #include <cstdlib>
+#include <iostream>
 #include <string>
 
 int main() {
@@ -8,7 +8,8 @@ int main() {
 | '_ \| | | |/ _` | | | / __|/ _ \ | | |/ _ \
 | | | | |_| | (_| | |_| \__ \  __/ |_| | (_) |
 |_| |_|\__,_|\__, |\__,_|___/\___|\__, |\___/
-             |___/                |___/)" << std::endl;
+             |___/                |___/)"
+              << std::endl;
 
     // 2. 取得終端機的行列數，並檢查是否為 nullptr
     const char* colsEnv = std::getenv("COLUMNS");
@@ -19,7 +20,7 @@ int main() {
 
     // 如果無法讀取環境變數，則使用 `tput` 指令
     if (termCols == 0 || termRows == 0) {
-        FILE *pipe = popen("tput cols", "r");
+        FILE* pipe = popen("tput cols", "r");
         if (pipe) {
             fscanf(pipe, "%d", &termCols);
             pclose(pipe);
@@ -42,7 +43,7 @@ int main() {
     // 4. 使用 jp2a 指令來顯示圖片
     std::string jp2aCommand = "jp2a --width=" + std::to_string(termCols) +
                               " --height=" + std::to_string(jp2aHeight) +
-                              " images.png";
+                              " /usr/local/share/nuguseyo/images.png";
     system(jp2aCommand.c_str());
 
     return 0;
