@@ -1,0 +1,25 @@
+{
+    "name": "Nuguseyo",
+    "build": {
+      "dockerfile": "Dockerfile",
+      "context": "."
+    },
+    "settings": {
+      "terminal.integrated.shell.linux": "/bin/bash",
+      "editor.formatOnSave": true,
+      "C_Cpp.clang_format_fallbackStyle": "{ BasedOnStyle: Google, IndentWidth: 4 }"
+    },
+    "extensions": [
+      "ms-vscode.cpptools",
+      "ms-vscode.cmake-tools",
+      "ms-vscode.cmake",
+      "ms-vscode.cpptools-extension-pack"
+    ],
+    "postCreateCommand": "cmake .",
+    "remoteUser": "vscode",
+    "runArgs": [
+      "--cap-add=SYS_PTRACE",     // 調試 C++ 程式時需要的能力
+      "--security-opt", "seccomp=unconfined"
+    ]
+  }
+  
