@@ -1,0 +1,19 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build", // 與 launch.json 中的 preLaunchTask 名稱對應
+            "type": "shell",
+            "command": "make", // 使用 make 編譯
+            "args": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "detail": "編譯 C++ 程式"
+        }
+    ]
+}

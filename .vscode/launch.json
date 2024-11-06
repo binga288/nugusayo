@@ -1,0 +1,29 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug C++ Program",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/main", // 編譯後的執行檔路徑
+            "args": [], // 可選，若有參數傳遞給程式，填寫於此
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "build", // 自動編譯前的任務名稱（需要在 tasks.json 中配置）
+            "miDebuggerPath": "/usr/bin/gdb", // GDB 路徑，通常預設在 /usr/bin/gdb
+            "logging": {
+                "engineLogging": false
+            }
+        }
+    ]
+}
