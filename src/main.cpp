@@ -36,5 +36,14 @@ int main() {
         return 1;
     }
 
+    // 3. 計算去掉 header 後的有效行數
+    int jp2aHeight = termRows - 7;
+
+    // 4. 使用 jp2a 指令來顯示圖片
+    std::string jp2aCommand = "jp2a --width=" + std::to_string(termCols) +
+                              " --height=" + std::to_string(jp2aHeight) +
+                              " images.png";
+    system(jp2aCommand.c_str());
+
     return 0;
 }
