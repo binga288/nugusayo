@@ -17,5 +17,24 @@ int main() {
     int termCols = (colsEnv) ? std::atoi(colsEnv) : 0;
     int termRows = (rowsEnv) ? std::atoi(rowsEnv) : 0;
 
+    // 如果無法讀取環境變數，則使用 `tput` 指令
+    if (termCols == 0 || termRows == 0) {
+        FILE *pipe = popen("tput cols", "r");
+        if (pipe) {
+            fscanf(pipe, "%d", &termCols);
+            pclose(pipe);
+        }
+        pipe = popen("tput lines", "r");
+        if (pipe) {
+            fscanf(pipe, "%d", &termRows);
+            pclose(pipe);
+        }
+    }
+
+    if (termCols == 0 || termRows == 0) {
+        std::cerr << "無法取得終端機解析度" << std::endl;
+        return 1;
+    }
+
     return 0;
 }
