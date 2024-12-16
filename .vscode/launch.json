@@ -10,8 +10,6 @@
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
             "setupCommands": [
                 {
                     "description": "Enable pretty-printing for gdb",
@@ -20,10 +18,6 @@
                 }
             ],
             "preLaunchTask": "build", // 自動編譯前的任務名稱（需要在 tasks.json 中配置）
-            "miDebuggerPath": "/usr/bin/gdb", // GDB 路徑，通常預設在 /usr/bin/gdb
-            "logging": {
-                "engineLogging": false
-            }
         }
     ]
 }

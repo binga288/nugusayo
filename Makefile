@@ -25,5 +25,27 @@ $(TARGET): $(OBJ_FILES)
 clean:
 	rm -f $(OBJ_FILES) $(TARGET)
 
-# Phony targets
-.PHONY: all clean
+# deb打包目標
+deb: all
+	rm -rf debian
+	mkdir -p debian/DEBIAN
+	mkdir -p debian/usr/local/bin
+	mkdir -p debian/usr/local/share/nuguseyo
+
+	# 將已編譯完成的 main 複製為 nuguseyo
+	cp $(TARGET) debian/usr/local/bin/nuguseyo
+	cp images.png debian/usr/local/share/nuguseyo/
+
+	# 建立控制檔
+	echo "Package: nuguseyo" > debian/DEBIAN/control
+	echo "Version: 1.0" >> debian/DEBIAN/control
+	echo "Section: utils" >> debian/DEBIAN/control
+	echo "Priority: optional" >> debian/DEBIAN/control
+	echo "Architecture: amd64" >> debian/DEBIAN/control
+	echo "Maintainer: Your Name <you@example.com>" >> debian/DEBIAN/control
+	echo "Description: Nuguseyo app" >> debian/DEBIAN/control
+	echo " This is the nuguseyo application that uses images.png." >> debian/DEBIAN/control
+
+	dpkg-deb --build debian nuguseyo-package.deb
+
+.PHONY: all clean deb
