@@ -21,7 +21,7 @@ nuguseyo
 
 Have fun!
 
-3. Uninstall Nuguseyo
+## Uninstall Nuguseyo
 
 **Not recommend you to do this.**
 
