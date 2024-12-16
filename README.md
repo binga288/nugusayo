@@ -20,3 +20,11 @@ nuguseyo
 ![App screenshot](./docs/static/screenshot.png)
 
 Have fun!
+
+3. Uninstall Nuguseyo
+
+**Not recommend you to do this.**
+
+```
+sudo dpkg -r nuguseyo
+```
