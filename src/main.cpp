@@ -2,7 +2,16 @@
 #include <iostream>
 #include <string>
 
-int main() {
+int main(int argc, char* argv[]) {
+    // 檢查是否有傳入 --colorful 參數
+    bool colorful = false;
+    for (int i = 1; i < argc; i++) {
+        if (std::string(argv[i]) == "--colorful") {
+            colorful = true;
+            break;
+        }
+    }
+
     // 1. 顯示固定的 header
     std::cout << R"( _ __  _   _  __ _ _   _ ___  ___ _   _  ___
 | '_ \| | | |/ _` | | | / __|/ _ \ | | |/ _ \
@@ -42,8 +51,14 @@ int main() {
 
     // 4. 使用 jp2a 指令來顯示圖片
     std::string jp2aCommand = "jp2a --width=" + std::to_string(termCols) +
-                              " --height=" + std::to_string(jp2aHeight) +
-                              " images.png";
+                              " --height=" + std::to_string(jp2aHeight);
+
+    // 如果有傳入 --colorful，則加入 --color (或 --colors，看 jp2a 的實際參數)
+    if (colorful) {
+        jp2aCommand += " --color";
+    }
+
+    jp2aCommand += " images.png";
 
     system(jp2aCommand.c_str());
 
