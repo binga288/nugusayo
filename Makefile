@@ -1,10 +1,21 @@
-# 編譯器
-CXX = g++
+# 預設從 uname -m 取得架構（可被外部指定 ARCH 覆蓋）
+ARCH ?= $(shell uname -m)
 
-# 編譯選項
+ifeq ($(ARCH), x86_64)
+    ARCH_DEB = amd64
+    CXX = g++
+else ifeq ($(ARCH), aarch64)
+    ARCH_DEB = arm64
+    CXX = g++
+else ifeq ($(ARCH), arm64)
+    ARCH_DEB = arm64
+    CXX = aarch64-linux-gnu-g++
+else
+    $(error Unsupported architecture: $(ARCH))
+endif
+
 CXXFLAGS = -Wall -Wextra -std=c++17
 
-# 專案目錄和檔案
 SRC_DIR = src
 SRC_FILES = $(SRC_DIR)/main.cpp
 OBJ_FILES = $(SRC_FILES:.cpp=.o)
@@ -41,7 +52,7 @@ deb: all
 	echo "Version: 1.0" >> debian/DEBIAN/control
 	echo "Section: utils" >> debian/DEBIAN/control
 	echo "Priority: optional" >> debian/DEBIAN/control
-	echo "Architecture: amd64" >> debian/DEBIAN/control
+	echo "Architecture: $(ARCH_DEB)" >> debian/DEBIAN/control
 	echo "Maintainer: Your Name <you@example.com>" >> debian/DEBIAN/control
 	echo "Description: Nuguseyo app" >> debian/DEBIAN/control
 	echo " This is the nuguseyo application that uses images.png." >> debian/DEBIAN/control
