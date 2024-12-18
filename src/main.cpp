@@ -1,5 +1,6 @@
 // main.cpp
 #include <cstdlib>
+#include <filesystem>
 #include <iostream>
 
 #include "args.h"
@@ -19,6 +20,13 @@ int main(int argc, char* argv[]) {
     std::string imagePath = Args::getArgumentValue(argc, argv, "--path");
     if (imagePath.empty()) {
         imagePath = DEFAULT_IMAGE_FILE;  // 預設圖片路徑
+    }
+
+    // 檢查圖片文件是否存在
+    if (!std::filesystem::exists(imagePath)) {
+        std::cerr << "Error: image file \"" << imagePath << "\" not exists."
+                  << std::endl;
+        return EXIT_FAILURE;
     }
 
     // Display header
