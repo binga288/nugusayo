@@ -2,17 +2,12 @@
 
 ## Installation
 
-1. Install jp2a
+1. Install Nuguseyo
 ```
-sudo apt-get install jp2a
-```
-
-2. Install Nuguseyo
-```
-sudo dpkg -i nuguseyo-package.deb
+sudo apt install nuguseyo-package.deb
 ```
 
-3. Run Nuguseyo
+2. Run Nuguseyo
 ```
 nuguseyo
 ```
@@ -26,5 +21,5 @@ Have fun!
 **Not recommend you to do this.**
 
 ```
-sudo dpkg -r nuguseyo
+sudo apt remove nuguseyo
 ```
