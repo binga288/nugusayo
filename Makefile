@@ -37,13 +37,6 @@ DEPS = $(OBJS:.o=.d)
 # 目標執行檔
 TARGET = $(BIN_DIR)/nuguseyo
 
-# 檢查 jp2a 是否存在
-ifneq ($(shell which jp2a),)
-    JP2A_INSTALLED = yes
-else
-    $(error jp2a is not installed. Please install jp2a before building.)
-endif
-
 .PHONY: all clean deb
 
 # 預設目標
