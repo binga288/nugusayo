@@ -5,7 +5,7 @@
             "name": "Debug C++ Program",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/main", // 編譯後的執行檔路徑
+            "program": "${workspaceFolder}/bin/nuguseyo", // 編譯後的執行檔路徑
             "args": [], // 可選，若有參數傳遞給程式，填寫於此
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

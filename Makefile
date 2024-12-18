@@ -1,3 +1,5 @@
+# Makefile
+
 # 預設從 uname -m 取得架構（可被外部指定 ARCH 覆蓋）
 ARCH ?= $(shell uname -m)
 
@@ -14,30 +16,65 @@ else
     $(error Unsupported architecture: $(ARCH))
 endif
 
-CXXFLAGS = -Wall -Wextra -std=c++17
+# 編譯器選項
+CXXFLAGS = -Wall -Wextra -std=c++17 -Iinclude -MMD -MP
 
+# 目錄設置
 SRC_DIR = src
-SRC_FILES = $(SRC_DIR)/main.cpp
-OBJ_FILES = $(SRC_FILES:.cpp=.o)
-TARGET = main
+INCLUDE_DIR = include
+OBJ_DIR = obj
+BIN_DIR = bin
 
-# 尋找 jp2a 的可執行檔路徑
-JP2A_PATH := $(shell which jp2a)
+# 源文件：包含 src/ 目錄下的所有 .cpp 文件
+SRCS = $(wildcard $(SRC_DIR)/*.cpp)
+
+# 物件文件：將 src/*.cpp 轉換為 obj/*.o
+OBJS = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRCS))
+
+# 依賴文件
+DEPS = $(OBJS:.o=.d)
+
+# 目標執行檔
+TARGET = $(BIN_DIR)/nuguseyo
+
+# 檢查 jp2a 是否存在
+ifneq ($(shell which jp2a),)
+    JP2A_INSTALLED = yes
+else
+    $(error jp2a is not installed. Please install jp2a before building.)
+endif
 
 .PHONY: all clean deb
 
+# 預設目標
 all: $(TARGET)
 
-$(TARGET): $(OBJ_FILES)
-	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJ_FILES)
+# 建立目標執行檔
+$(TARGET): $(OBJS) | $(BIN_DIR)
+	$(CXX) $(CXXFLAGS) -o $@ $(OBJS)
 
-%.o: %.cpp
+# 通用的編譯規則：將 src/*.cpp 編譯為 obj/*.o
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
+# 自動包含依賴文件
+-include $(DEPS)
+
+# 建立物件文件目錄
+$(OBJ_DIR):
+	mkdir -p $(OBJ_DIR)
+
+# 建立執行檔目錄
+$(BIN_DIR):
+	mkdir -p $(BIN_DIR)
+
+# 清理編譯生成的文件
 clean:
-	rm -f $(OBJ_FILES) $(TARGET) nuguseyo-package.deb
+	rm -rf $(OBJ_DIR) $(BIN_DIR)
+	rm -f nuguseyo-package.deb
 	rm -rf debian
 
+# 建立 Debian 套件
 deb: all
 	rm -rf debian
 	mkdir -p debian/DEBIAN
@@ -47,20 +84,18 @@ deb: all
 	# 複製主程式
 	cp $(TARGET) debian/usr/local/bin/nuguseyo
 	
-	# 複製 jp2a 執行檔 (確保系統上有 jp2a)
-	cp $(JP2A_PATH) debian/usr/local/bin/
-
 	# 複製圖片檔案
 	cp images.png debian/usr/local/share/nuguseyo/
-
-	# 建立控制檔 (不需要 Depends，因為我們直接內含 jp2a)
+	
+	# 建立控制檔
 	echo "Package: nuguseyo" > debian/DEBIAN/control
 	echo "Version: 1.0" >> debian/DEBIAN/control
 	echo "Section: utils" >> debian/DEBIAN/control
 	echo "Priority: optional" >> debian/DEBIAN/control
 	echo "Architecture: $(ARCH_DEB)" >> debian/DEBIAN/control
+	echo "Depends: jp2a" >> debian/DEBIAN/control
 	echo "Maintainer: Your Name <you@example.com>" >> debian/DEBIAN/control
-	echo "Description: Nuguseyo app with jp2a embedded" >> debian/DEBIAN/control
-	echo " This package includes nuguseyo and jp2a, as well as images.png." >> debian/DEBIAN/control
+	echo "Description: Nuguseyo app with jp2a dependency" >> debian/DEBIAN/control
+	echo " This package includes nuguseyo and depends on jp2a, as well as images.png." >> debian/DEBIAN/control
 
 	dpkg-deb --build debian nuguseyo-package.deb
