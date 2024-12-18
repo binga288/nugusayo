@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <filesystem>
 #include <iostream>
+#include <random>
 
 #include "args.h"
 #include "display.h"
@@ -10,14 +11,19 @@
 
 // Constants
 constexpr int HEADER_HEIGHT = 7;
-constexpr const char* DEFAULT_IMAGE_FILE = "images.png";
+constexpr const char* DEFAULT_IMAGE_FILE =
+    "images/image1.png";                          // 更新預設圖片路徑
+constexpr const char* IMAGES_FOLDER = "images/";  // 圖片資料夾路徑
+constexpr int NUM_IMAGES = 15;                    // 圖片數量
 
 // Function to print help message
 void printHelp() {
-    std::cout
-        << "Usage: nuguseyo [OPTIONS]\n"
+    std::cout << "Usage: nuguseyo [OPTIONS]\n"
         << "Options:\n"
-        << "  --path <image_path>     指定要加載的圖片路徑 (預設: images.png)\n"
+              << "  --path <image_path>     指定要加載的圖片路徑 (預設: "
+                 "images/image1.png)\n"
+              << "  --random                隨機選擇 images 資料夾中的一張圖片 "
+                 "(image1.png ~ image15.png)\n"
         << "  --colorful              啟用彩色輸出\n"
         << "  --help                  顯示此幫助信息\n";
 }
@@ -31,10 +37,22 @@ int main(int argc, char* argv[]) {
 
     // Parse command-line arguments
     bool colorful = Args::isFlagEnabled(argc, argv, "--colorful");
+    bool random = Args::isFlagEnabled(argc, argv, "--random");
 
-    // 獲取 --path 參數的值，若未提供則使用預設路徑
+    // 獲取 --path 參數的值，若未提供則使用預設路徑或隨機選擇
     std::string imagePath = Args::getArgumentValue(argc, argv, "--path");
-    if (imagePath.empty()) {
+
+    if (random) {
+        // 使用 --random 參數，隨機選擇一張圖片
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> dis(1, NUM_IMAGES);
+        int randomImage = dis(gen);
+        imagePath = std::string(IMAGES_FOLDER) + "image" +
+                    std::to_string(randomImage) + ".png";
+        std::cout << "隨機選擇的圖片: " << imagePath << std::endl;
+    } else if (imagePath.empty()) {
+        // 未使用 --random 且未指定 --path，使用預設圖片
         imagePath = DEFAULT_IMAGE_FILE;  // 預設圖片路徑
     }
 
