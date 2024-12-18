@@ -1,0 +1,49 @@
+.TH NUGUSEYO "1" "2024年12月" "1.0" "Nuguseyo Manual"
+.SH NAME
+nuguseyo \- 一個可以讓你在 CLI 介面顯示一隻鳥的工具
+.SH SYNOPSIS
+.B nuguseyo
+[\fIOPTIONS\fR]
+.SH DESCRIPTION
+`nuguseyo` 是一個命令行工具，用於將圖片轉換為 ASCII 藝術圖。它依賴於外部工具 `jp2a` 來執行轉換。
+
+.SH OPTIONS
+.TP
+.B \--path <image_path>
+指定要加載的圖片路徑。預設為 `images/image1.png`。
+
+.TP
+.B \--random
+隨機選擇 `images` 資料夾中的一張圖片（`image1.png` 至 `image20.png`）來顯示。
+
+.TP
+.B \--output <file_path>
+將 ASCII 藝術圖輸出到指定的文件，而不是在終端顯示。
+
+.TP
+.B \--colorful
+啟用彩色輸出。
+
+.TP
+.B \--help
+顯示此幫助信息。
+
+.SH EXAMPLES
+將預設圖片轉換為 ASCII 藝術圖並顯示在終端：
+.IP
+nuguseyo
+
+將隨機選擇一張圖片並將 ASCII 藝術圖輸出到 `output.txt`：
+.IP
+nuguseyo --random --output output.txt
+
+將指定路徑的圖片轉換為彩色 ASCII 藝術圖：
+.IP
+nuguseyo --path /path/to/image.png --colorful
+
+.SH AUTHOR
+由 Ann Liao, Ga Bin 及 YaoEn Liu 撰寫。
+
+.SH SEE ALSO
+.B jp2a(1),
+.B asciinema(1).

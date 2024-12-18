@@ -73,6 +73,7 @@ deb: all
 	mkdir -p debian/DEBIAN
 	mkdir -p debian/usr/local/bin
 	mkdir -p debian/usr/local/share/nuguseyo
+	mkdir -p debian/usr/share/man/man1
 
 	# 複製主程式
 	cp $(TARGET) debian/usr/local/bin/nuguseyo
@@ -80,6 +81,10 @@ deb: all
 	# 複製圖片檔案
 	cp images/image*.png debian/usr/local/share/nuguseyo/
 	
+	# 複製並壓縮 man 頁面
+	cp man1/nuguseyo.1 debian/usr/share/man/man1/
+	gzip -f debian/usr/share/man/man1/nuguseyo.1
+
 	# 建立控制檔
 	echo "Package: nuguseyo" > debian/DEBIAN/control
 	echo "Version: 1.0" >> debian/DEBIAN/control
