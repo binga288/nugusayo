@@ -1,66 +1,48 @@
+// main.cpp
 #include <cstdlib>
 #include <iostream>
-#include <string>
+
+#include "args.h"
+#include "display.h"
+#include "jp2a.h"
+#include "terminal.h"
+
+// Constants
+constexpr int HEADER_HEIGHT = 7;
+constexpr const char* IMAGE_FILE = "images.png";
 
 int main(int argc, char* argv[]) {
-    // 檢查是否有傳入 --colorful 參數
-    bool colorful = false;
-    for (int i = 1; i < argc; i++) {
-        if (std::string(argv[i]) == "--colorful") {
-            colorful = true;
-            break;
-        }
+    // Parse command-line arguments
+    bool colorful = Args::isFlagEnabled(argc, argv, "--colorful");
+
+    // Display header
+    Display::displayHeader();
+
+    // Get terminal size
+    auto terminalSizeOpt = Terminal::getTerminalSize();
+    if (!terminalSizeOpt) {
+        std::cerr << "Unable to determine terminal size." << std::endl;
+        return EXIT_FAILURE;
     }
 
-    // 1. 顯示固定的 header
-    std::cout << R"( _ __  _   _  __ _ _   _ ___  ___ _   _  ___
-| '_ \| | | |/ _` | | | / __|/ _ \ | | |/ _ \
-| | | | |_| | (_| | |_| \__ \  __/ |_| | (_) |
-|_| |_|\__,_|\__, |\__,_|___/\___|\__, |\___/
-             |___/                |___/)"
-              << std::endl;
+    int termCols = terminalSizeOpt->first;
+    int termRows = terminalSizeOpt->second;
 
-    // 2. 取得終端機的行列數，並檢查是否為 nullptr
-    const char* colsEnv = std::getenv("COLUMNS");
-    const char* rowsEnv = std::getenv("LINES");
-
-    int termCols = (colsEnv) ? std::atoi(colsEnv) : 0;
-    int termRows = (rowsEnv) ? std::atoi(rowsEnv) : 0;
-
-    // 如果無法讀取環境變數，則使用 `tput` 指令
-    if (termCols == 0 || termRows == 0) {
-        FILE* pipe = popen("tput cols", "r");
-        if (pipe) {
-            fscanf(pipe, "%d", &termCols);
-            pclose(pipe);
-        }
-        pipe = popen("tput lines", "r");
-        if (pipe) {
-            fscanf(pipe, "%d", &termRows);
-            pclose(pipe);
-        }
+    // Calculate the height for jp2a
+    int jp2aHeight = termRows - HEADER_HEIGHT;
+    if (jp2aHeight <= 0) {
+        std::cerr << "Terminal size too small to display image." << std::endl;
+        return EXIT_FAILURE;
     }
 
-    if (termCols == 0 || termRows == 0) {
-        std::cerr << "無法取得終端機解析度" << std::endl;
-        return 1;
+    // Build and execute the jp2a command
+    std::string jp2aCommand =
+        Jp2a::buildJp2aCommand(termCols, jp2aHeight, colorful, IMAGE_FILE);
+    int systemStatus = Jp2a::executeJp2a(jp2aCommand);
+    if (systemStatus != 0) {
+        std::cerr << "Failed to execute jp2a command." << std::endl;
+        return EXIT_FAILURE;
     }
 
-    // 3. 計算去掉 header 後的有效行數
-    int jp2aHeight = termRows - 7;
-
-    // 4. 使用 jp2a 指令來顯示圖片
-    std::string jp2aCommand = "jp2a --width=" + std::to_string(termCols) +
-                              " --height=" + std::to_string(jp2aHeight);
-
-    // 如果有傳入 --colorful，則加入 --color (或 --colors，看 jp2a 的實際參數)
-    if (colorful) {
-        jp2aCommand += " --color";
-    }
-
-    jp2aCommand += " images.png";
-
-    system(jp2aCommand.c_str());
-
-    return 0;
+    return EXIT_SUCCESS;
 }
