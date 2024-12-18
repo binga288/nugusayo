@@ -1,5 +1,6 @@
 // main.cpp
 #include <cstdlib>
+#include <filesystem>
 #include <iostream>
 
 #include "args.h"
@@ -9,11 +10,40 @@
 
 // Constants
 constexpr int HEADER_HEIGHT = 7;
-constexpr const char* IMAGE_FILE = "images.png";
+constexpr const char* DEFAULT_IMAGE_FILE = "images.png";
+
+// Function to print help message
+void printHelp() {
+    std::cout
+        << "Usage: nuguseyo [OPTIONS]\n"
+        << "Options:\n"
+        << "  --path <image_path>     指定要加載的圖片路徑 (預設: images.png)\n"
+        << "  --colorful              啟用彩色輸出\n"
+        << "  --help                  顯示此幫助信息\n";
+}
 
 int main(int argc, char* argv[]) {
+    // 如果使用了 --help，顯示幫助信息並退出
+    if (Args::isFlagEnabled(argc, argv, "--help")) {
+        printHelp();
+        return EXIT_SUCCESS;
+    }
+
     // Parse command-line arguments
     bool colorful = Args::isFlagEnabled(argc, argv, "--colorful");
+
+    // 獲取 --path 參數的值，若未提供則使用預設路徑
+    std::string imagePath = Args::getArgumentValue(argc, argv, "--path");
+    if (imagePath.empty()) {
+        imagePath = DEFAULT_IMAGE_FILE;  // 預設圖片路徑
+    }
+
+    // 檢查圖片文件是否存在
+    if (!std::filesystem::exists(imagePath)) {
+        std::cerr << "Error: image file \"" << imagePath << "\" not exists."
+                  << std::endl;
+        return EXIT_FAILURE;
+    }
 
     // Display header
     Display::displayHeader();
@@ -37,7 +67,7 @@ int main(int argc, char* argv[]) {
 
     // Build and execute the jp2a command
     std::string jp2aCommand =
-        Jp2a::buildJp2aCommand(termCols, jp2aHeight, colorful, IMAGE_FILE);
+        Jp2a::buildJp2aCommand(termCols, jp2aHeight, colorful, imagePath);
     int systemStatus = Jp2a::executeJp2a(jp2aCommand);
     if (systemStatus != 0) {
         std::cerr << "Failed to execute jp2a command." << std::endl;
