@@ -9,11 +9,17 @@
 
 // Constants
 constexpr int HEADER_HEIGHT = 7;
-constexpr const char* IMAGE_FILE = "images.png";
+constexpr const char* DEFAULT_IMAGE_FILE = "images.png";
 
 int main(int argc, char* argv[]) {
     // Parse command-line arguments
     bool colorful = Args::isFlagEnabled(argc, argv, "--colorful");
+
+    // 獲取 --path 參數的值，若未提供則使用預設路徑
+    std::string imagePath = Args::getArgumentValue(argc, argv, "--path");
+    if (imagePath.empty()) {
+        imagePath = DEFAULT_IMAGE_FILE;  // 預設圖片路徑
+    }
 
     // Display header
     Display::displayHeader();
@@ -37,7 +43,7 @@ int main(int argc, char* argv[]) {
 
     // Build and execute the jp2a command
     std::string jp2aCommand =
-        Jp2a::buildJp2aCommand(termCols, jp2aHeight, colorful, IMAGE_FILE);
+        Jp2a::buildJp2aCommand(termCols, jp2aHeight, colorful, imagePath);
     int systemStatus = Jp2a::executeJp2a(jp2aCommand);
     if (systemStatus != 0) {
         std::cerr << "Failed to execute jp2a command." << std::endl;
