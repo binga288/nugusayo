@@ -12,7 +12,23 @@
 constexpr int HEADER_HEIGHT = 7;
 constexpr const char* DEFAULT_IMAGE_FILE = "images.png";
 
+// Function to print help message
+void printHelp() {
+    std::cout
+        << "Usage: nuguseyo [OPTIONS]\n"
+        << "Options:\n"
+        << "  --path <image_path>     指定要加載的圖片路徑 (預設: images.png)\n"
+        << "  --colorful              啟用彩色輸出\n"
+        << "  --help                  顯示此幫助信息\n";
+}
+
 int main(int argc, char* argv[]) {
+    // 如果使用了 --help，顯示幫助信息並退出
+    if (Args::isFlagEnabled(argc, argv, "--help")) {
+        printHelp();
+        return EXIT_SUCCESS;
+    }
+
     // Parse command-line arguments
     bool colorful = Args::isFlagEnabled(argc, argv, "--colorful");
 
