@@ -6,7 +6,7 @@
 
 1. Install Nuguseyo via apt
 ```
-sudo apt install nuguseyo-package.deb
+sudo apt install ./nuguseyo-package.deb
 ```
 
 2. Run Nuguseyo
@@ -29,6 +29,8 @@ Options:
   --colorful              啟用彩色輸出
   --help                  顯示此幫助信息
 ```
+
+You can get the usage via `man nuguseyo` also.
 
 ## Uninstall Nuguseyo
 
