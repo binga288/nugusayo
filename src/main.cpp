@@ -24,6 +24,7 @@ void printHelp() {
                  "images/image1.png)\n"
               << "  --random                隨機選擇 images 資料夾中的一張圖片 "
                  "(image1.png ~ image15.png)\n"
+              << "  --output <file_path>    將 ASCII 藝術圖輸出到指定的文件\n"
         << "  --colorful              啟用彩色輸出\n"
         << "  --help                  顯示此幫助信息\n";
 }
@@ -38,6 +39,8 @@ int main(int argc, char* argv[]) {
     // Parse command-line arguments
     bool colorful = Args::isFlagEnabled(argc, argv, "--colorful");
     bool random = Args::isFlagEnabled(argc, argv, "--random");
+    std::string outputPath =
+        Args::getArgumentValue(argc, argv, "--output");  // 新增解析 --output
 
     // 獲取 --path 參數的值，若未提供則使用預設路徑或隨機選擇
     std::string imagePath = Args::getArgumentValue(argc, argv, "--path");
@@ -83,9 +86,17 @@ int main(int argc, char* argv[]) {
         return EXIT_FAILURE;
     }
 
-    // Build and execute the jp2a command
+    // Build the jp2a command
     std::string jp2aCommand =
         Jp2a::buildJp2aCommand(termCols, jp2aHeight, colorful, imagePath);
+
+    if (!outputPath.empty()) {
+        // 如果指定了 --output，將 jp2a 的輸出重定向到指定文件
+        jp2aCommand += " > " + outputPath;
+        std::cout << "ASCII 藝術圖將被輸出到: " << outputPath << std::endl;
+    }
+
+    // Execute the jp2a command
     int systemStatus = Jp2a::executeJp2a(jp2aCommand);
     if (systemStatus != 0) {
         std::cerr << "Failed to execute jp2a command." << std::endl;
