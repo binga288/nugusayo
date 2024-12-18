@@ -78,7 +78,7 @@ deb: all
 	cp $(TARGET) debian/usr/local/bin/nuguseyo
 	
 	# 複製圖片檔案
-	cp images.png debian/usr/local/share/nuguseyo/
+	cp images/image*.png debian/usr/local/share/nuguseyo/
 	
 	# 建立控制檔
 	echo "Package: nuguseyo" > debian/DEBIAN/control
@@ -89,6 +89,6 @@ deb: all
 	echo "Depends: jp2a" >> debian/DEBIAN/control
 	echo "Maintainer: Your Name <you@example.com>" >> debian/DEBIAN/control
 	echo "Description: Nuguseyo app with jp2a dependency" >> debian/DEBIAN/control
-	echo " This package includes nuguseyo and depends on jp2a, as well as images.png." >> debian/DEBIAN/control
+	echo " This package includes nuguseyo, depends on jp2a, and includes images/image1.png to images/image15.png as selectable images." >> debian/DEBIAN/control
 
 	dpkg-deb --build debian nuguseyo-package.deb
