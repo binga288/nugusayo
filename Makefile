@@ -87,7 +87,7 @@ deb: all
 	echo "Priority: optional" >> debian/DEBIAN/control
 	echo "Architecture: $(ARCH_DEB)" >> debian/DEBIAN/control
 	echo "Depends: jp2a" >> debian/DEBIAN/control
-	echo "Maintainer: Your Name <you@example.com>" >> debian/DEBIAN/control
+	echo "Maintainer: Ann Liao, Ga Bin, YaoEn Liu" >> debian/DEBIAN/control
 	echo "Description: Nuguseyo app with jp2a dependency" >> debian/DEBIAN/control
 	echo " This package includes nuguseyo, depends on jp2a, and includes images/image1.png to images/image15.png as selectable images." >> debian/DEBIAN/control
 
